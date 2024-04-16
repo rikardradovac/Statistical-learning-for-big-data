@@ -7,6 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import auc
 
 # Load data
 X = pd.read_csv('data/TCGAdata.txt', sep=' ', header=0)
@@ -35,11 +36,11 @@ scaled_df = pd.DataFrame(scaled_data, columns=X.columns)
 variances = scaled_df.var()
 
 # Sort the variances in descending order
-X = variances.sort_values(ascending=False)[:40]
+X_sorted = variances.sort_values(ascending=False)[:1000]
 
 # Create a bar plot of the variances
 plt.figure(figsize=(10, 5))
-plt.plot(X)
+plt.plot(X_sorted)
 # plt.yscale('log')
 plt.xlabel('Features')
 plt.ylabel('Variance')
@@ -47,6 +48,12 @@ plt.title('Top 30 Features by Variance')
 plt.xticks(rotation=90)
 plt.grid()
 plt.show()
+
+all_variances = np.trapz(variances, range(len(variances)))
+part = np.trapz(X_sorted, range(len(X_sorted)))
+
+print(part/all_variances)
+
 # Create and fit the KNN model
 knn_small = KNeighborsClassifier(n_neighbors=2)
 knn_big = KNeighborsClassifier(n_neighbors=20)
